@@ -50,9 +50,17 @@ namespace KelanHelperBot
             }
         }
 
+        static async Task SendMessage(Chat chatId, int messageId, string message)
+        {
+            await botClient.SendTextMessageAsync(chatId: chatId, text: message, replyToMessageId: messageId);
+        }
+
+        //Business logic
+
         static string GetRandom(string command)
         {
             var parts = command.Split(new char[] { ' ' });
+            var rand = new Random();
             if (parts.Length == 2)
             {
                 var number = int.TryParse(parts[1], out int num) ? num : throw new Exception($"Параметр '{parts[1]}' должен быть целым числом больше нуля, проверьте данные и повторите ввод");
@@ -60,17 +68,24 @@ namespace KelanHelperBot
                 {
                     throw new Exception($"Число должно быть больше нуля");
                 }
-                var rand = new Random();
 
                 return rand.Next(number).ToString();
             }
+            if (parts.Length == 3)
+            {
+                var from = int.TryParse(parts[1], out int num1) ? num1 : throw new Exception($"Параметр '{parts[1]}' должен быть целым числом больше нуля, проверьте данные и повторите ввод");
+                var to = int.TryParse(parts[2], out int num2) ? num2 : throw new Exception($"Параметр '{parts[2]}' должен быть целым числом больше нуля, проверьте данные и повторите ввод");
+                if (to <= from)
+                {
+                    throw new Exception("Второе число должно быть больше первого");
+                }
 
-            throw new Exception("Неверный вызов функции. Используйте формат: /random число");
+                return rand.Next(from, to).ToString();
+            }
+
+            throw new Exception("Неверный вызов функции. Используйте формат: /random число или /random от до");
         }
 
-        static async Task SendMessage(Chat chatId, int messageId, string message)
-        {
-            await botClient.SendTextMessageAsync(chatId: chatId, text: message, replyToMessageId: messageId);
-        }
+
     }
 }
