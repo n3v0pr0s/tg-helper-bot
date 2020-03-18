@@ -1,1 +1,1 @@
-web: cd $HOME/heroku_output && ./KelanHelperBot 
+worker: cd $HOME/heroku_output && ./KelanHelperBot 
