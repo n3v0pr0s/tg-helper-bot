@@ -23,28 +23,43 @@ namespace KelanHelperBot
 
         static async void Bot_OnMessage(object sender, MessageEventArgs e)
         {
-            if (e.Message.Text != null)
+            try
             {
-                Console.WriteLine($"Received a text message in chat {e.Message.Chat.Id}.");
-
-                switch (e.Message.Text)
+                if (e.Message.Text != null)
                 {
-                    case var message when message == "/help":
-                        await SendMessage(e.Message.Chat, e.Message.MessageId, "Нужна помощь, скоро поможем!");
-                        break;
-                    case var message when message == "/hello":
-                        await SendMessage(e.Message.Chat, e.Message.MessageId, "Привет!");
-                        break;
+                    Console.WriteLine($"Received a text message in chat {e.Message.Chat.Id}.");
 
-                    default:
-                        await SendMessage(e.Message.Chat, e.Message.MessageId, "Команда не распознана");
-                        break;
+                    switch (e.Message.Text)
+                    {
+                        case var message when message == "/help":
+                            await SendMessage(e.Message.Chat, e.Message.MessageId, "Звоните 911!");
+                            break;
+                        case var message when message == "/hello":
+                            await SendMessage(e.Message.Chat, e.Message.MessageId, "Привет!");
+                            break;
+                        case var message when message.StartsWith("/random "):
+                            await SendMessage(e.Message.Chat, e.Message.MessageId, GetRandom(e.Message.Text));
+                            break;
 
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                await SendMessage(e.Message.Chat, e.Message.MessageId, ex.Message);
             }
         }
 
-        public static async Task SendMessage(Chat chatId, int messageId, string message)
+        static string GetRandom(string command)
+        {
+            var numberText = command.Replace("/random ", "");
+            var number = int.TryParse(numberText, out int num) ? num : throw new Exception("Проверьте данные и повторите ввод");
+            Random rand = new Random();
+
+            return rand.Next(number).ToString();
+        }
+
+        static async Task SendMessage(Chat chatId, int messageId, string message)
         {
             await botClient.SendTextMessageAsync(chatId: chatId, text: message, replyToMessageId: messageId);
         }
