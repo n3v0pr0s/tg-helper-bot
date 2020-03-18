@@ -37,7 +37,7 @@ namespace KelanHelperBot
                         case var message when message == "/hello":
                             await SendMessage(e.Message.Chat, e.Message.MessageId, "Привет!");
                             break;
-                        case var message when message.StartsWith("/random "):
+                        case var message when message.StartsWith("/random"):
                             await SendMessage(e.Message.Chat, e.Message.MessageId, GetRandom(e.Message.Text));
                             break;
 
@@ -52,11 +52,20 @@ namespace KelanHelperBot
 
         static string GetRandom(string command)
         {
-            var numberText = command.Replace("/random ", "");
-            var number = int.TryParse(numberText, out int num) ? num : throw new Exception("Проверьте данные и повторите ввод");
-            Random rand = new Random();
+            var parts = command.Split(new char[] { ' ' });
+            if (parts.Length == 2)
+            {
+                var number = int.TryParse(parts[1], out int num) ? num : throw new Exception($"Параметр '{parts[1]}' должен быть целым числом больше нуля, проверьте данные и повторите ввод");
+                if (number < 1)
+                {
+                    throw new Exception($"Число должно быть больше нуля");
+                }
+                var rand = new Random();
 
-            return rand.Next(number).ToString();
+                return rand.Next(number).ToString();
+            }
+
+            throw new Exception("Неверный вызов функции. Используйте формат: /random число");
         }
 
         static async Task SendMessage(Chat chatId, int messageId, string message)
