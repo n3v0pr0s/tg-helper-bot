@@ -65,11 +65,11 @@ namespace KelanHelperBot
             await botClient.SendTextMessageAsync(chatId: chatId, text: message, replyToMessageId: messageId);
         }
 
-        static async Task SendMessage(Chat chatId, int messageId, string[] messages)
-        {
-            var result = string.Join("\n", messages);
-            await botClient.SendTextMessageAsync(chatId: chatId, text: result, replyToMessageId: messageId);
-        }
+        //static async Task SendMessage(Chat chatId, int messageId, string[] messages)
+        //{
+        //    var result = string.Join("\n", messages);
+        //    await botClient.SendTextMessageAsync(chatId: chatId, text: result, replyToMessageId: messageId);
+        //}
 
         //Business logic
 
@@ -112,7 +112,7 @@ namespace KelanHelperBot
         }
 
 
-        static string[] GetHrefsFromAutoRu(string command)
+        static string GetHrefsFromAutoRu(string command)
         {
             var parts = command.Split(new char[] { ' ' });
 
@@ -145,10 +145,13 @@ namespace KelanHelperBot
 
             foreach (var href in hrefs)
             {
-                result.Add(href.InnerText);
+                return href.InnerText;
+                 //result.Add(href.InnerText);
+                //break;
             }
 
-            return result.Take(takeCount).ToArray();
+            //return result.Take(takeCount).ToArray();  
+            return null;
         }
 
 
