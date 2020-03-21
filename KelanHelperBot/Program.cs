@@ -1,5 +1,6 @@
 ﻿using HtmlAgilityPack;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -45,6 +46,9 @@ namespace KelanHelperBot
                         case var message when message.StartsWith("/random"):
                             await SendMessage(e.Message.Chat, e.Message.MessageId, GetRandom(e.Message.Text));
                             break;
+                        case var message when message.StartsWith("/auto"):
+                            await SendMessage(e.Message.Chat, e.Message.MessageId, GetHrefsFromAutoRu(e.Message.Text));
+                            break;
 
 
                     }
@@ -59,6 +63,14 @@ namespace KelanHelperBot
         static async Task SendMessage(Chat chatId, int messageId, string message)
         {
             await botClient.SendTextMessageAsync(chatId: chatId, text: message, replyToMessageId: messageId);
+        }
+
+        static async Task SendMessage(Chat chatId, int messageId, string[] messages)
+        {
+            foreach (var message in messages)
+            {
+                await botClient.SendTextMessageAsync(chatId: chatId, text: message, replyToMessageId: messageId);
+            }
         }
 
         //Business logic
@@ -100,5 +112,49 @@ namespace KelanHelperBot
 
             return nodes.First().InnerText;
         }
+
+
+        static string[] GetHrefsFromAutoRu(string command)
+        {
+            var parts = command.Split(new char[] { ' ' });
+
+            if (parts.Length < 3)
+            {
+                throw new Exception("Недостаточно параметров для поиска, повторите ввод");
+            }
+
+            var city = "orenburg";
+            var takeCount = 3;
+            var vendor = parts[1];
+            var model = parts[2];
+
+            if (parts.Length == 4)
+            {
+                city = parts[3];
+            }
+            if (parts.Length == 5)
+            {
+                takeCount = int.TryParse(parts[4], out int take) ? take : throw new Exception($"Вместо '{parts[4]}' нужно указать число");
+            }
+
+            //business logic
+
+            var result = new List<string>();
+
+            var web = new HtmlWeb();
+            var doc = web.Load($"https://auto.ru/{city}/cars/{vendor}/{model}/all/?sort=fresh_relevance_1-desc&geo_radius=200");
+            var hrefs = doc.DocumentNode.SelectNodes("//a[@class='Link ListingItemTitle-module__link']/href").Take(takeCount);
+
+            foreach (var href in hrefs)
+            {
+                result.Add(href.InnerText);
+            }
+
+            return result.ToArray();
+        }
+
+
+
+
     }
 }
