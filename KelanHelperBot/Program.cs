@@ -1,4 +1,6 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -37,9 +39,13 @@ namespace KelanHelperBot
                         case var message when message == "/hello":
                             await SendMessage(e.Message.Chat, e.Message.MessageId, "Привет!");
                             break;
+                        case var message when message == "/rub":
+                            await SendMessage(e.Message.Chat, e.Message.MessageId, GetRubRate());
+                            break;
                         case var message when message.StartsWith("/random"):
                             await SendMessage(e.Message.Chat, e.Message.MessageId, GetRandom(e.Message.Text));
                             break;
+
 
                     }
                 }
@@ -86,6 +92,13 @@ namespace KelanHelperBot
             throw new Exception("Неверный вызов функции. Используйте формат: /random число или /random от до");
         }
 
+        static string GetRubRate()
+        {
+            var web = new HtmlWeb();
+            var doc = web.Load("http://www.profinance.ru/currency_usd.asp");
+            var nodes = doc.DocumentNode.SelectNodes("//td[@class='cell'][@align='center'][@colspan='2']/font[@color='Red']/b");
 
+            return nodes.First().InnerText;
+        }
     }
 }
