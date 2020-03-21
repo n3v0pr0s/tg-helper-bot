@@ -67,10 +67,8 @@ namespace KelanHelperBot
 
         static async Task SendMessage(Chat chatId, int messageId, string[] messages)
         {
-            foreach (var message in messages)
-            {
-                await botClient.SendTextMessageAsync(chatId: chatId, text: message, replyToMessageId: messageId);
-            }
+            var result = string.Join("\n", messages);
+            await botClient.SendTextMessageAsync(chatId: chatId, text: result, replyToMessageId: messageId);
         }
 
         //Business logic
@@ -143,14 +141,14 @@ namespace KelanHelperBot
 
             var web = new HtmlWeb();
             var doc = web.Load($"https://auto.ru/{city}/cars/{vendor}/{model}/all/?sort=fresh_relevance_1-desc&geo_radius=200");
-            var hrefs = doc.DocumentNode.SelectNodes("//a[@class='Link ListingItemTitle-module__link']/href").Take(takeCount);
+            var hrefs = doc.DocumentNode.SelectNodes("//a[@class='Link ListingItemTitle-module__link']/href");
 
             foreach (var href in hrefs)
             {
                 result.Add(href.InnerText);
             }
 
-            return result.ToArray();
+            return result.Take(takeCount).ToArray();
         }
 
 
