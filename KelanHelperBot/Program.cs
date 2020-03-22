@@ -67,8 +67,10 @@ namespace KelanHelperBot
 
         static async Task SendMessage(Chat chatId, int messageId, string[] messages)
         {
-            var result = string.Join("\n", messages);
-            await botClient.SendTextMessageAsync(chatId: chatId, text: result, replyToMessageId: messageId);
+            foreach (var message in messages)
+            {
+                await botClient.SendTextMessageAsync(chatId: chatId, text: message, replyToMessageId: messageId);
+            }
         }
 
         //Business logic
@@ -152,9 +154,5 @@ namespace KelanHelperBot
             return result.ToArray();
 
         }
-
-
-
-
     }
 }
