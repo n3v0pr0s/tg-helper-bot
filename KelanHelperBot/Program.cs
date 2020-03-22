@@ -114,14 +114,14 @@ namespace KelanHelperBot
         }
 
 
-        static string GetHrefsFromAutoRu(string command)
+        static async string GetHrefsFromAutoRu(string command)
         {
             var parts = command.Split(new char[] { ' ' });
 
-            if (parts.Length < 3)
-            {
-                throw new Exception("Недостаточно параметров для поиска, повторите ввод");
-            }
+            //if (parts.Length < 3)
+            //{
+            //    throw new Exception("Недостаточно параметров для поиска, повторите ввод");
+            //}
 
             var city = "orenburg";
             var count = 3;
@@ -145,8 +145,13 @@ namespace KelanHelperBot
             var doc = web.Load(link);
             var nodes = doc.DocumentNode.SelectNodes("//a[@class='Link ListingItemTitle-module__link']");
 
+            foreach (var node in nodes.Take(count))
+            {
+                Console.WriteLine(node.InnerText);
+            }
 
-            var resultHref = nodes.FirstOrDefault().Attributes["href"].Value;
+
+            var resultHref = nodes.First().Attributes["href"].Value;
             Console.WriteLine(resultHref);
             return resultHref;
         }
