@@ -65,11 +65,11 @@ namespace KelanHelperBot
             await botClient.SendTextMessageAsync(chatId: chatId, text: message, replyToMessageId: messageId);
         }
 
-        //static async Task SendMessage(Chat chatId, int messageId, string[] messages)
-        //{
-        //    var result = string.Join("\n", messages);
-        //    await botClient.SendTextMessageAsync(chatId: chatId, text: result, replyToMessageId: messageId);
-        //}
+        static async Task SendMessage(Chat chatId, int messageId, string[] messages)
+        {
+            var result = string.Join("\n", messages);
+            await botClient.SendTextMessageAsync(chatId: chatId, text: result, replyToMessageId: messageId);
+        }
 
         //Business logic
 
@@ -112,7 +112,7 @@ namespace KelanHelperBot
         }
 
 
-        static string GetHrefsFromAutoRu(string command)
+        static string[] GetHrefsFromAutoRu(string command)
         {
             var parts = command.Split(new char[] { ' ' });
 
@@ -122,7 +122,7 @@ namespace KelanHelperBot
             }
 
             var city = "orenburg";
-            var takeCount = 3;
+            var count = 3;
             var vendor = parts[1];
             var model = parts[2];
 
@@ -132,7 +132,7 @@ namespace KelanHelperBot
             }
             if (parts.Length == 5)
             {
-                takeCount = int.TryParse(parts[4], out int take) ? take : throw new Exception($"Вместо '{parts[4]}' нужно указать число");
+                count = int.TryParse(parts[4], out int take) ? take : throw new Exception($"Вместо '{parts[4]}' нужно указать число");
             }
 
             //business logic
@@ -140,18 +140,17 @@ namespace KelanHelperBot
             var result = new List<string>();
 
             var web = new HtmlWeb();
-            var doc = web.Load($"https://auto.ru/{city}/cars/{vendor}/{model}/all/?sort=fresh_relevance_1-desc&geo_radius=200");
-            var hrefs = doc.DocumentNode.SelectNodes("//a[@class='Link ListingItemTitle-module__link']/href");
+            var doc = web.Load($"https://auto.ru/{city}/cars/{vendor}/{model}/all/?sort=price-asc&geo_radius=200");
+            var nodes = doc.DocumentNode.SelectNodes("//a[@class='Link ListingItemTitle-module__link']").Take(count);
 
-            foreach (var href in hrefs)
+            foreach (var href in nodes)
             {
-                return href.InnerText;
-                 //result.Add(href.InnerText);
-                //break;
+                var link = href.Attributes["href"].Value;
+                result.Add(link);
             }
 
-            //return result.Take(takeCount).ToArray();  
-            return null;
+            return result.ToArray();
+
         }
 
 
