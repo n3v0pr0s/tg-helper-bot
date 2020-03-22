@@ -114,7 +114,7 @@ namespace KelanHelperBot
         }
 
 
-        static string[] GetHrefsFromAutoRu(string command)
+        static string GetHrefsFromAutoRu(string command)
         {
             var parts = command.Split(new char[] { ' ' });
 
@@ -130,28 +130,31 @@ namespace KelanHelperBot
 
             if (parts.Length == 4)
             {
-                city = parts[3];
+                count = int.TryParse(parts[4], out int take) ? take : throw new Exception($"Вместо '{parts[4]}' нужно указать число");
             }
             if (parts.Length == 5)
             {
-                count = int.TryParse(parts[4], out int take) ? take : throw new Exception($"Вместо '{parts[4]}' нужно указать число");
+                city = parts[3];
             }
 
             //business logic
 
-            var result = new List<string>();
+            //var result = new List<string>();
 
             var web = new HtmlWeb();
             var doc = web.Load($"https://auto.ru/{city}/cars/{vendor}/{model}/all/?sort=price-asc&geo_radius=200");
-            var nodes = doc.DocumentNode.SelectNodes("//a[@class='Link ListingItemTitle-module__link']").Take(count);
+            var nodes = doc.DocumentNode.SelectNodes("//a[@class='Link ListingItemTitle-module__link']");//.Take(count);
 
             foreach (var href in nodes)
             {
                 var link = href.Attributes["href"].Value;
-                result.Add(link);
+                return link;
+                //result.Add(link);
             }
 
-            return result.ToArray();
+            return null;
+
+            //return result.ToArray();
 
         }
     }
