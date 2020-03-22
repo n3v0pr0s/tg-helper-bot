@@ -65,13 +65,13 @@ namespace KelanHelperBot
             await botClient.SendTextMessageAsync(chatId: chatId, text: message, replyToMessageId: messageId);
         }
 
-        static async Task SendMessage(Chat chatId, int messageId, string[] messages)
-        {
-            foreach (var message in messages)
-            {
-                await botClient.SendTextMessageAsync(chatId: chatId, text: message, replyToMessageId: messageId);
-            }
-        }
+        //static async Task SendMessage(Chat chatId, int messageId, string[] messages)
+        //{
+        //    foreach (var message in messages)
+        //    {
+        //        await botClient.SendTextMessageAsync(chatId: chatId, text: message, replyToMessageId: messageId);
+        //    }
+        //}
 
         //Business logic
 
@@ -128,37 +128,27 @@ namespace KelanHelperBot
             var vendor = parts[1];
             var model = parts[2];
 
-            if (parts.Length == 4)
-            {
-                count = int.TryParse(parts[4], out int take) ? take : throw new Exception($"Вместо '{parts[4]}' нужно указать число");
-            }
-            if (parts.Length == 5)
-            {
-                city = parts[3];
-            }
+            //if (parts.Length == 4)
+            //{
+            //    count = int.TryParse(parts[4], out int take) ? take : throw new Exception($"Вместо '{parts[4]}' нужно указать число");
+            //}
+            //if (parts.Length == 5)
+            //{
+            //    city = parts[3];
+            //}
 
-            //business logic
-
-            //var result = new List<string>();
+            //business logic            
 
             var web = new HtmlWeb();
-            var doc = web.Load($"https://auto.ru/{city}/cars/{vendor}/{model}/all/?sort=price-asc&geo_radius=200");
-            var nodes = doc.DocumentNode.SelectNodes("//a[@class='Link ListingItemTitle-module__link']");//.Take(count);
+            var link = $"https://auto.ru/{city}/cars/{vendor}/{model}/all/?sort=price-asc&geo_radius=200";
+            Console.WriteLine(link);
+            var doc = web.Load(link);
+            var nodes = doc.DocumentNode.SelectNodes("//a[@class='Link ListingItemTitle-module__link']");
 
-            //foreach (var href in nodes)
-            //{
-            //    var link = href.Attributes["href"].Value;
-            //    return link;
-            //    //result.Add(link);
-            //}
 
             var resultHref = nodes.FirstOrDefault().Attributes["href"].Value;
             Console.WriteLine(resultHref);
             return resultHref;
-
-
-            //return result.ToArray();
-
         }
     }
 }
