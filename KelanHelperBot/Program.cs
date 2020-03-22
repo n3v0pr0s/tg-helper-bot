@@ -145,14 +145,17 @@ namespace KelanHelperBot
             var doc = web.Load($"https://auto.ru/{city}/cars/{vendor}/{model}/all/?sort=price-asc&geo_radius=200");
             var nodes = doc.DocumentNode.SelectNodes("//a[@class='Link ListingItemTitle-module__link']");//.Take(count);
 
-            foreach (var href in nodes)
-            {
-                var link = href.Attributes["href"].Value;
-                return link;
-                //result.Add(link);
-            }
+            //foreach (var href in nodes)
+            //{
+            //    var link = href.Attributes["href"].Value;
+            //    return link;
+            //    //result.Add(link);
+            //}
 
-            return null;
+            var resultHref = nodes.FirstOrDefault().Attributes["href"].Value;
+            Console.WriteLine(resultHref);
+            return resultHref;
+
 
             //return result.ToArray();
 
