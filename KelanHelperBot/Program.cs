@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -15,7 +16,8 @@ namespace KelanHelperBot
         private static ITelegramBotClient botClient;
         static void Main(string[] args)
         {
-            botClient = new TelegramBotClient("822847399:AAHtD0vLdcTZtRas84-LWvvChIUNNPTK07w");
+            var proxy = new WebProxy("167.99.168.90:3128", true);
+            botClient = new TelegramBotClient("822847399:AAHtD0vLdcTZtRas84-LWvvChIUNNPTK07w", proxy);
             var me = botClient.GetMeAsync().Result;
             Console.WriteLine($"Hello, World! I am user {me.Id} and my name is {me.FirstName}.");
 
@@ -28,30 +30,27 @@ namespace KelanHelperBot
         {
             try
             {
-                if (e.Message.Text != null)
+                if (e.Message.Text == null || e.Message.Type != Telegram.Bot.Types.Enums.MessageType.Text)
                 {
-                    Console.WriteLine($"Received a text message in chat {e.Message.Chat.Id}.");
+                    return;
+                }
 
-                    switch (e.Message.Text)
-                    {
-                        case var message when message == "/help":
-                            await SendMessage(e.Message.Chat, e.Message.MessageId, "Звоните 911!");
-                            break;
-                        case var message when message == "/hello":
-                            await SendMessage(e.Message.Chat, e.Message.MessageId, "Привет!");
-                            break;
-                        case var message when message == "/rub":
-                            await SendMessage(e.Message.Chat, e.Message.MessageId, GetRubRate());
-                            break;
-                        case var message when message.StartsWith("/random"):
-                            await SendMessage(e.Message.Chat, e.Message.MessageId, GetRandom(e.Message.Text));
-                            break;
-                        case var message when message.StartsWith("/auto"):
-                            await SendMessage(e.Message.Chat, e.Message.MessageId, GetHrefsFromAutoRu(e.Message.Text));
-                            break;
+                Console.WriteLine($"Received a text message in chat {e.Message.Chat.Id}.");
 
-
-                    }
+                switch (e.Message.Text)
+                {
+                    case "/rub":
+                        await SendMessage(e.Message.Chat, e.Message.MessageId, GetRubRate());
+                        break;
+                    case var mes when mes.StartsWith("/random"):
+                        await SendMessage(e.Message.Chat, e.Message.MessageId, GetRandom(e.Message.Text));
+                        break;
+                    case var mes when mes.StartsWith("/auto"):
+                        await SendMessage(e.Message.Chat, e.Message.MessageId, GetAutoRuAdvertisement(e.Message.Text));
+                        break;
+                    case var mes when mes.StartsWith("/alco"):
+                        await SendMessage(e.Message.Chat, e.Message.MessageId, GetAlcohol());
+                        break;
                 }
             }
             catch (Exception ex)
@@ -65,13 +64,14 @@ namespace KelanHelperBot
             await botClient.SendTextMessageAsync(chatId: chatId, text: message, replyToMessageId: messageId);
         }
 
-        //static async Task SendMessage(Chat chatId, int messageId, string[] messages)
-        //{
-        //    foreach (var message in messages)
-        //    {
-        //        await botClient.SendTextMessageAsync(chatId: chatId, text: message, replyToMessageId: messageId);
-        //    }
-        //}
+        static async Task SendMessage(Chat chatId, int messageId, IEnumerable<string> messages)
+        {
+            foreach (var message in messages)
+            {
+                await botClient.SendTextMessageAsync(chatId: chatId, text: message, replyToMessageId: messageId);
+                Thread.Sleep(1500);
+            }
+        }
 
         //Business logic
 
@@ -113,47 +113,62 @@ namespace KelanHelperBot
             return nodes.First().InnerText;
         }
 
-
-        static string GetHrefsFromAutoRu(string command)
+        static IEnumerable<string> GetAutoRuAdvertisement(string command)
         {
             var parts = command.Split(new char[] { ' ' });
 
-            //if (parts.Length < 3)
-            //{
-            //    throw new Exception("Недостаточно параметров для поиска, повторите ввод");
-            //}
+            if (parts.Length < 3)
+            {
+                throw new Exception("Недостаточно параметров для поиска, повторите ввод");
+            }
 
             var city = "orenburg";
             var count = 3;
             var vendor = parts[1];
             var model = parts[2];
 
-            //if (parts.Length == 4)
-            //{
-            //    count = int.TryParse(parts[4], out int take) ? take : throw new Exception($"Вместо '{parts[4]}' нужно указать число");
-            //}
-            //if (parts.Length == 5)
-            //{
-            //    city = parts[3];
-            //}
+            var sort = parts[parts.Length - 1] == "top" ? "desc" : "asc";
+
+            if (sort == "desc")
+            {
+                if (parts.Length >= 5)
+                {
+                    count = int.TryParse(parts[3], out int take) ? take : throw new Exception($"Вместо '{parts[3]}' нужно указать число");
+                }
+                if (parts.Length >= 6)
+                {
+                    city = parts[4];
+                }
+            }
+            else
+            {
+                if (parts.Length >= 4)
+                {
+                    count = int.TryParse(parts[3], out int take) ? take : throw new Exception($"Вместо '{parts[3]}' нужно указать число");
+                }
+                if (parts.Length >= 5)
+                {
+                    city = parts[4];
+                }
+            }
+
 
             //business logic            
 
             var web = new HtmlWeb();
-            var link = $"https://auto.ru/{city}/cars/{vendor}/{model}/all/?sort=price-asc&geo_radius=200";
-            Console.WriteLine(link);
+            var link = $"https://auto.ru/{city}/cars/{vendor}/{model}/all/?sort=price-{sort}&geo_radius=200";
             var doc = web.Load(link);
-            var nodes = doc.DocumentNode.SelectNodes("//a[@class='Link ListingItemTitle-module__link']");
+            var nodes = doc.DocumentNode.SelectNodes("//a[@class='Link ListingItemTitle-module__link']").Take(count);
 
-            foreach (var node in nodes.Take(count))
+            foreach (var node in nodes)
             {
-                Console.WriteLine(node.InnerText);
+                yield return node.Attributes["href"].Value;
             }
+        }
 
-
-            var resultHref = nodes.First().Attributes["href"].Value;
-            Console.WriteLine(resultHref);
-            return resultHref;
+        static string GetAlcohol()
+        {
+            throw new NotImplementedException("В разработке...");
         }
     }
 }
