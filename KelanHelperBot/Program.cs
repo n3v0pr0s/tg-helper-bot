@@ -114,7 +114,7 @@ namespace KelanHelperBot
         }
 
 
-        static async string GetHrefsFromAutoRu(string command)
+        static string GetHrefsFromAutoRu(string command)
         {
             var parts = command.Split(new char[] { ' ' });
 
