@@ -16,7 +16,7 @@ namespace KelanHelperBot
         private static ITelegramBotClient botClient;
         static void Main(string[] args)
         {
-            var proxy = new WebProxy("167.99.168.90:3128", true);
+            var proxy = new WebProxy("167.71.183.113:8888", true);
             botClient = new TelegramBotClient("822847399:AAHtD0vLdcTZtRas84-LWvvChIUNNPTK07w", proxy);
             var me = botClient.GetMeAsync().Result;
             Console.WriteLine($"Hello, World! I am user {me.Id} and my name is {me.FirstName}.");
