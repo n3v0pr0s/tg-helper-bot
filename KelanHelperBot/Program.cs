@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -47,8 +48,11 @@ namespace KelanHelperBot
                     case var mes when mes.StartsWith("/random"):
                         await SendMessage(e.Message.Chat, e.Message.MessageId, GetRandom(e.Message.Text));
                         break;
+                    //case var mes when mes.StartsWith("/auto"):
+                    //    await SendMessage(e.Message.Chat, e.Message.MessageId, GetAutoRuAdvertisement(e.Message.Text));
+                    //    break;
                     case var mes when mes.StartsWith("/auto"):
-                        await SendMessage(e.Message.Chat, e.Message.MessageId, GetAutoRuAdvertisement(e.Message.Text));
+                        await SendMessage(e.Message.Chat, e.Message.MessageId, AutoruTest());
                         break;
                     case var mes when mes.StartsWith("/alco"):
                         await SendMessage(e.Message.Chat, e.Message.MessageId, GetAlcohol());
@@ -167,6 +171,18 @@ namespace KelanHelperBot
                 yield return node.Attributes["href"].Value;
             }
         }
+
+        static string AutoruTest()
+        {
+            using (var wc = new WebClient())
+            {
+                var json = wc.DownloadString("https://kelan.online/api/autoru");
+                var match = Regex.Match(json, "\"name\":\"(.*?)\"");
+
+                return match.Groups[1].Value;
+            }
+        }
+
 
         static string GetAlcohol()
         {
