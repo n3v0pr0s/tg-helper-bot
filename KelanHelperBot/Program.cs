@@ -20,7 +20,7 @@ namespace KelanHelperBot
             //var proxy = new WebProxy("167.71.183.113:8888", true);            
             //botClient = new TelegramBotClient("822847399:AAHtD0vLdcTZtRas84-LWvvChIUNNPTK07w", proxy);
 
-            botClient = new TelegramBotClient("822847399:AAHtD0vLdcTZtRas84-LWvvChIUNNPTK07w");
+            botClient = new TelegramBotClient("1090271056:AAHy1WT01Ns5YPAWPgFR7LYbJheSX4S4UkQ");
             var me = botClient.GetMeAsync().Result;
             Console.WriteLine($"Hello, World! I am user {me.Id} and my name is {me.FirstName}.");
 
