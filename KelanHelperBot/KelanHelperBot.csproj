@@ -11,8 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\procedural-generation\procedural-generation\procedural-generation.csproj" />
     <ProjectReference Include="..\Finance\Finance.csproj" />
+    <ProjectReference Include="..\ProceduralGeneration\ProceduralGeneration.csproj" />
   </ItemGroup>
 
 </Project>

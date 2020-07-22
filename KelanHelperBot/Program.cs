@@ -38,7 +38,7 @@ namespace KelanHelperBot
                         await SendMessage(e.Message.Chat, e.Message.MessageId, Finance.RUR.GetRurRatio());
                         break;
                     case "/map":
-                        var map = new procedural_generation.Map();
+                        var map = new ProceduralGeneration.Map();
                         await SendImage(e.Message.Chat, e.Message.MessageId, map.Draw());
                         break;
                     case "/test":
