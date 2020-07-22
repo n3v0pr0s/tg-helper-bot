@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KelanHelperBot", "KelanHelperBot\KelanHelperBot.csproj", "{F6B023AC-1A44-4645-B68D-C81CE425BA0D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Finance", "Finance\Finance.csproj", "{60A71FC0-3DCB-4BDE-99A0-5014B61AB0A9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "procedural-generation", "..\procedural-generation\procedural-generation\procedural-generation.csproj", "{0EAE08D1-1048-4D01-A471-B2B6873AF313}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{F6B023AC-1A44-4645-B68D-C81CE425BA0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6B023AC-1A44-4645-B68D-C81CE425BA0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F6B023AC-1A44-4645-B68D-C81CE425BA0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60A71FC0-3DCB-4BDE-99A0-5014B61AB0A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60A71FC0-3DCB-4BDE-99A0-5014B61AB0A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60A71FC0-3DCB-4BDE-99A0-5014B61AB0A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60A71FC0-3DCB-4BDE-99A0-5014B61AB0A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0EAE08D1-1048-4D01-A471-B2B6873AF313}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0EAE08D1-1048-4D01-A471-B2B6873AF313}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0EAE08D1-1048-4D01-A471-B2B6873AF313}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0EAE08D1-1048-4D01-A471-B2B6873AF313}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

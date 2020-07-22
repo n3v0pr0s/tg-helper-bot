@@ -10,4 +10,9 @@
     <PackageReference Include="Telegram.Bot" Version="15.4.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\procedural-generation\procedural-generation\procedural-generation.csproj" />
+    <ProjectReference Include="..\Finance\Finance.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -1,9 +1,4 @@
-﻿using HtmlAgilityPack;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text.RegularExpressions;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -17,11 +12,8 @@ namespace KelanHelperBot
         private static ITelegramBotClient botClient;
         static void Main(string[] args)
         {
-            //var proxy = new WebProxy("167.71.183.113:8888", true);            
-            //botClient = new TelegramBotClient("822847399:AAHtD0vLdcTZtRas84-LWvvChIUNNPTK07w", proxy);
-
             botClient = new TelegramBotClient("1325530422:AAF6YmqP0F_UYRInxUJ9Q94j_AVJ3PBiZQ8");
-            var me = botClient.GetMeAsync().Result;            
+            var me = botClient.GetMeAsync().Result;
 
             botClient.OnMessage += Bot_OnMessage;
             botClient.StartReceiving();
@@ -38,13 +30,22 @@ namespace KelanHelperBot
                 }
 
                 Console.WriteLine($"Received a text message in chat {e.Message.Chat.Id}.");
-                
+
                 //TODO: add more commands
                 switch (e.Message.Text)
                 {
                     case "/rub":
-                        await SendMessage(e.Message.Chat, e.Message.MessageId, GetRubRate());
-                        break;                    
+                        await SendMessage(e.Message.Chat, e.Message.MessageId, Finance.RUR.GetRurRatio());
+                        break;
+                    case "/map":
+                        var map = new procedural_generation.Map();
+                        await SendImage(e.Message.Chat, e.Message.MessageId, map.Draw());
+                        break;
+                    case "/test":
+                        await SendMessage(e.Message.Chat, e.Message.MessageId, "test test test");
+                        break;                     
+
+
                 }
             }
             catch (Exception ex)
@@ -58,25 +59,9 @@ namespace KelanHelperBot
             await botClient.SendTextMessageAsync(chatId: chatId, text: message, replyToMessageId: messageId);
         }
 
-        static async Task SendMessage(Chat chatId, int messageId, IEnumerable<string> messages)
+        static async Task SendImage(Chat chatId, int messageId, dynamic image)
         {
-            foreach (var message in messages)
-            {
-                await botClient.SendTextMessageAsync(chatId: chatId, text: message, replyToMessageId: messageId);
-                Thread.Sleep(1500);
-            }
-        }
-
-        //Business logic
-        
-
-        static string GetRubRate()
-        {
-            var web = new HtmlWeb();
-            var doc = web.Load("http://www.profinance.ru/currency_usd.asp");
-            var nodes = doc.DocumentNode.SelectNodes("//td[@class='cell'][@align='center'][@colspan='2']/font[@color='Red']/b");
-
-            return nodes.First().InnerText;
+            await botClient.SendPhotoAsync(chatId: chatId, photo: image, replyToMessageId: messageId);
         }
     }
 }
