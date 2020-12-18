@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -37,17 +38,28 @@ namespace KelanHelperBot
                     case "/rub":
                         await SendMessage(e.Message.Chat, e.Message.MessageId, Finance.RUR.GetUSDRatio());
                         break;
+
                     case "/btc":
                         await SendMessage(e.Message.Chat, e.Message.MessageId, Finance.BTC.GetUSDRatio());
                         break;
-                    case "/map":
-                        var map = new ProceduralGeneration.Map();
-                        await SendImage(e.Message.Chat, e.Message.MessageId, map.Draw());
+
+                    case "/pic":
+                        var map = new ProceduralGeneration.Map();                     
+                        var bitmap = map.Draw();
+                        var path = @"map.bmp";
+                        bitmap.Save(path);                     
+                        using (var stream = System.IO.File.OpenRead(path))
+                            await SendImage(e.Message.Chat, e.Message.MessageId, stream);                        
                         break;
+
+                    //case "/map":
+                    //    var map = new ProceduralGeneration.Map();
+                    //    await SendImage(e.Message.Chat, e.Message.MessageId, map.Draw());
+                    //    break;
+
                     case "/test":
                         await SendMessage(e.Message.Chat, e.Message.MessageId, "test test test");
                         break;
-
 
                 }
             }
