@@ -35,7 +35,10 @@ namespace KelanHelperBot
                 switch (e.Message.Text)
                 {
                     case "/rub":
-                        await SendMessage(e.Message.Chat, e.Message.MessageId, Finance.RUR.GetRurRatio());
+                        await SendMessage(e.Message.Chat, e.Message.MessageId, Finance.RUR.GetUSDRatio());
+                        break;
+                    case "/btc":
+                        await SendMessage(e.Message.Chat, e.Message.MessageId, Finance.BTC.GetUSDRatio());
                         break;
                     case "/map":
                         var map = new ProceduralGeneration.Map();
@@ -43,7 +46,7 @@ namespace KelanHelperBot
                         break;
                     case "/test":
                         await SendMessage(e.Message.Chat, e.Message.MessageId, "test test test");
-                        break;                     
+                        break;
 
 
                 }

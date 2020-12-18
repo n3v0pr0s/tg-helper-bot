@@ -6,7 +6,7 @@ namespace Finance
 {
     public class RUR
     {
-        public static string GetRurRatio()
+        public static string GetUSDRatio()
         {
             var web = new HtmlWeb();
             var doc = web.Load("http://www.profinance.ru/currency_usd.asp");
