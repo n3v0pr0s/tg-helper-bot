@@ -1,5 +1,5 @@
 ﻿using DAL;
-using DAL.Controllers;
+using DAL.Services;
 using System;
 using System.IO;
 using System.Threading;
@@ -48,31 +48,21 @@ namespace KelanHelperBot
                     case "/case":
                         using (var ctx = new ApplicationContext())
                         {
-                            var caseController = new CaseController(ctx);
-                            var cases = await caseController.Get();
-
-                            await SendMessage(e.Message.Chat, e.Message.MessageId, cases);
+                            var caseService = new CaseService(ctx);
+                            var msg = await caseService.GetAllCasesAsJSON();
+                            await SendMessage(e.Message.Chat, e.Message.MessageId, msg);
                         }
-
                         break;
 
-                    case "/pic":
-                        var map = new ProceduralGeneration.Map();
-                        var bitmap = map.Draw();
-                        var path = @"map.bmp";
-                        bitmap.Save(path);
-                        using (var stream = System.IO.File.OpenRead(path))
-                            await SendImage(e.Message.Chat, e.Message.MessageId, stream);
-                        break;
 
-                    //case "/map":
-                    //    var map = new ProceduralGeneration.Map();
-                    //    await SendImage(e.Message.Chat, e.Message.MessageId, map.Draw());
-                    //    break;
-
-                    case "/test":
-                        await SendMessage(e.Message.Chat, e.Message.MessageId, "test test test");
-                        break;
+                        //case "/pic":
+                        //    var map = new ProceduralGeneration.Map();
+                        //    var bitmap = map.Draw();
+                        //    var path = @"map.bmp";
+                        //    bitmap.Save(path);
+                        //    using (var stream = System.IO.File.OpenRead(path))
+                        //        await SendImage(e.Message.Chat, e.Message.MessageId, stream);
+                        //    break;                            
 
                 }
             }

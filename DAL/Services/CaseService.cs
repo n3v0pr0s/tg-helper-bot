@@ -7,30 +7,37 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace DAL.Controllers
+namespace DAL.Services
 {
-    public class CaseController
+    public class CaseService
     {
         ApplicationContext db;
-        public CaseController(ApplicationContext context)
+        JsonSerializerOptions options;
+
+        public CaseService(ApplicationContext context)
         {
             db = context;
+
+            options = new JsonSerializerOptions()
+            {
+                WriteIndented = true
+            };
         }
 
-        public async Task<string> Get()
+        public async Task<string> GetAllCasesAsJSON()
         {
             var cases = await db.cases.OrderByDescending(x => x.kod_razb).ToArrayAsync();
-            return JsonSerializer.Serialize<Case[]>(cases);
+            return JsonSerializer.Serialize<Case[]>(cases, options);
         }
 
-        public async Task<string> Get(int id)
+        public async Task<string> GetCaseAsJSON(int id)
         {
             var @case = await db.cases.FirstOrDefaultAsync(x => x.kod_razb == id);
 
             if (@case == null)
                 return "Не найдено в базе";
 
-            return JsonSerializer.Serialize<Case>(@case);
+            return JsonSerializer.Serialize<Case>(@case, options);
         }
     }
 }
