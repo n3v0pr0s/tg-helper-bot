@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DAL;
+using DAL.Controllers;
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -43,13 +45,24 @@ namespace KelanHelperBot
                         await SendMessage(e.Message.Chat, e.Message.MessageId, Finance.BTC.GetUSDRatio());
                         break;
 
+                    case "/case":
+                        using (var ctx = new ApplicationContext())
+                        {
+                            var caseController = new CaseController(ctx);
+                            var cases = await caseController.Get();
+
+                            await SendMessage(e.Message.Chat, e.Message.MessageId, cases);
+                        }
+
+                        break;
+
                     case "/pic":
-                        var map = new ProceduralGeneration.Map();                     
+                        var map = new ProceduralGeneration.Map();
                         var bitmap = map.Draw();
                         var path = @"map.bmp";
-                        bitmap.Save(path);                     
+                        bitmap.Save(path);
                         using (var stream = System.IO.File.OpenRead(path))
-                            await SendImage(e.Message.Chat, e.Message.MessageId, stream);                        
+                            await SendImage(e.Message.Chat, e.Message.MessageId, stream);
                         break;
 
                     //case "/map":
