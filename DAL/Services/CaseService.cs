@@ -1,9 +1,5 @@
-﻿using DAL.Models;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Linq;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -27,7 +23,8 @@ namespace DAL.Services
         public async Task<string> GetAllCasesAsJSON()
         {
             var cases = await db.cases.OrderByDescending(x => x.kod_razb).ToArrayAsync();
-            return JsonSerializer.Serialize<Case[]>(cases, options);
+
+            return JsonSerializer.Serialize(cases, options);
         }
 
         public async Task<string> GetCaseAsJSON(int id)
@@ -37,7 +34,7 @@ namespace DAL.Services
             if (@case == null)
                 return "Не найдено в базе";
 
-            return JsonSerializer.Serialize<Case>(@case, options);
+            return JsonSerializer.Serialize(@case, options);
         }
     }
 }

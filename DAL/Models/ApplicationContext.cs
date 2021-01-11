@@ -7,11 +7,6 @@ namespace DAL
     {
         public DbSet<Case> cases { get; set; }
 
-        //public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
-        //{
-        //    Database.EnsureCreated();
-        //}
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             var host = "ec2-50-19-247-157.compute-1.amazonaws.com";
