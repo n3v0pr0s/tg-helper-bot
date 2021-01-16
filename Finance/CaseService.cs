@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DAL;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace DAL.Services
+namespace Services
 {
     public class CaseService
     {

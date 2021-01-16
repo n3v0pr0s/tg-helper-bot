@@ -1,6 +1,6 @@
 ﻿using DAL;
-using DAL.Models;
-using DAL.Services;
+using DAL.Entities;
+using Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,7 +14,7 @@ using Telegram.Bot.Types.InlineQueryResults;
 using Telegram.Bot.Types.InputFiles;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace KelanHelperBot
+namespace TelegramBot
 {
     class Program
     {
@@ -53,11 +53,11 @@ namespace KelanHelperBot
             switch (message.Text.Split(' ').First())
             {
                 case "/rub":
-                    await bot.SendTextMessageAsync(chatId: message.Chat.Id, text: Finance.RUR.GetUSDRatio());
+                    await bot.SendTextMessageAsync(chatId: message.Chat.Id, text: FinanceService.GetRUBRatio());
                     break;
 
                 case "/btc":
-                    await bot.SendTextMessageAsync(chatId: message.Chat.Id, text: Finance.BTC.GetUSDRatio());
+                    await bot.SendTextMessageAsync(chatId: message.Chat.Id, text: FinanceService.GetBTCRatio());
                     break;
 
                 case "/notes":
