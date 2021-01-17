@@ -8,6 +8,6 @@ namespace DAL.Entities
         public int id { get; set; }
         public string title { get; set; }
         public string content { get; set; }
-        public int user_id { get; set; }
+        public long user_id { get; set; }
     }
 }

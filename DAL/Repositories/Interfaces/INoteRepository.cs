@@ -6,6 +6,6 @@ namespace DAL.Repositories.Interfaces
 {
     public interface INoteRepository : IRepositoryBase<Note>
     {
-        Task<IEnumerable<Note>> GetNotesByUserId(int id);
+        Task<IEnumerable<Note>> GetNotesByUserId(long id);
     }
 }

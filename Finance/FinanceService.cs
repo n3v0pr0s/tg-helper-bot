@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Services
 {
-    public class FinanceService
+    public static class FinanceService
     {
         public static string GetBTCRatio()
         {

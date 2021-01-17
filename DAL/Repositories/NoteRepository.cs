@@ -15,7 +15,7 @@ namespace DAL.Repositories
             this.context = context;
         }
 
-        public async Task<IEnumerable<Note>> GetNotesByUserId(int id)
+        public async Task<IEnumerable<Note>> GetNotesByUserId(long id)
         {
             return await context.Set<Note>()
                 .Where(x => x.user_id == id)

@@ -1,6 +1,5 @@
 ﻿using DAL;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
+using DAL.Repositories.Interfaces;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -8,12 +7,12 @@ namespace Services
 {
     public class CaseService
     {
-        ApplicationContext db;
-        JsonSerializerOptions options;
+        private readonly ICaseRepository caseRepository;
+        private readonly JsonSerializerOptions options;
 
-        public CaseService(ApplicationContext context)
+        public CaseService(UnitOfWork unitOfWork)
         {
-            db = context;
+            this.caseRepository = unitOfWork.Cases;
 
             options = new JsonSerializerOptions()
             {
@@ -23,17 +22,14 @@ namespace Services
 
         public async Task<string> GetAllCasesAsJSON()
         {
-            var cases = await db.cases
-                .OrderByDescending(x => x.kod_razb)
-                .ToArrayAsync();
+            var cases = await caseRepository.GetAll();
 
             return JsonSerializer.Serialize(cases, options);
         }
 
         public async Task<string> GetCaseAsJSON(int id)
         {
-            var @case = await db.cases
-                .FirstOrDefaultAsync(x => x.kod_razb == id);
+            var @case = await caseRepository.Get(x => x.kod_razb == id);
 
             if (@case == null)
                 return "Не найдено в базе";

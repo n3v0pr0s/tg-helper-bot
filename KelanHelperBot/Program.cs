@@ -20,6 +20,7 @@ namespace TelegramBot
     {
         private const string token = "1325530422:AAF6YmqP0F_UYRInxUJ9Q94j_AVJ3PBiZQ8";
         private static ITelegramBotClient bot;
+        private static UnitOfWork unitOfWork;
         public static async Task Main(string[] args)
         {
             bot = new TelegramBotClient(token);
@@ -33,6 +34,8 @@ namespace TelegramBot
             bot.OnInlineQuery += BotOnInlineQueryReceived;
             bot.OnInlineResultChosen += BotOnChosenInlineResultReceived;
             bot.OnReceiveError += BotOnReceiveError;
+
+            unitOfWork = new UnitOfWork();
 
             bot.StartReceiving(Array.Empty<UpdateType>());
             Console.WriteLine($"Start listening for @{me.Username}");
@@ -48,27 +51,50 @@ namespace TelegramBot
             if (message == null || message.Type != MessageType.Text)
                 return;
 
-            Console.WriteLine($"User '{messageEventArgs.Message.Chat.Username ?? messageEventArgs.Message.Chat.Id.ToString()}' send message '{message.Text}'.");
+            var user_id = message.Chat.Id;
+            var username = message.Chat.Username;
+            Console.WriteLine($"User '{username ?? user_id.ToString()}' send message '{message.Text}'.");
 
-            switch (message.Text.Split(' ').First())
+            var messageComponents = message.Text.Split(' ');
+            var command = messageComponents.First();
+            var mayBeParam = messageComponents.Last();
+            var param = messageComponents.Length == 2
+                ? uint.TryParse(mayBeParam, out uint id) ? id : (uint?)null
+                : null;
+
+            switch (command)
             {
                 case "/rub":
-                    await bot.SendTextMessageAsync(chatId: message.Chat.Id, text: FinanceService.GetRUBRatio());
+                    await bot.SendTextMessageAsync(chatId: user_id, text: FinanceService.GetRUBRatio());
                     break;
 
                 case "/btc":
-                    await bot.SendTextMessageAsync(chatId: message.Chat.Id, text: FinanceService.GetBTCRatio());
+                    await bot.SendTextMessageAsync(chatId: user_id, text: FinanceService.GetBTCRatio());
                     break;
 
                 case "/notes":
-                    using (var db = new ApplicationContext())
-                    {
-                        var servise = new NoteService(db);
-                        var notes = await servise.GetNotesByUserId(1);
+                    var noteSevice = new NoteService(unitOfWork);
+                    var notes = await noteSevice.GetNotesByUserId(user_id);
+                    await SendInlineKeyboardByNotes(message, notes.ToArray());
+                    break;
 
-                        await SendInlineKeyboardByNotes(message, notes);
+                case "/cases":
+                    var caseService = new CaseService(unitOfWork);
+                    var cases = await caseService.GetAllCasesAsJSON();
+                    await bot.SendTextMessageAsync(chatId: user_id, text: cases);
+                    break;
+
+                case "/case":
+                    if (param == null)
+                    {
+                        await bot.SendTextMessageAsync(chatId: user_id, text: "Отсутствует параметр");
+                        break;
                     }
-                    break;          
+
+                    var caseService2 = new CaseService(unitOfWork);
+                    var @case = await caseService2.GetCaseAsJSON((int)param.Value);
+                    await bot.SendTextMessageAsync(chatId: user_id, text: @case);
+                    break;
 
                 default:
                     await Usage(message);
@@ -126,10 +152,10 @@ namespace TelegramBot
                 );
             }
 
-            static async Task SendInlineKeyboardByNotes(Message message, IEnumerable<Note> notes)
+            static async Task SendInlineKeyboardByNotes(Message message, Note[] notes)
             {
                 var rows = new List<List<InlineKeyboardButton>>();
-                for (int i = 0; i < notes.Count(); i++)
+                for (int i = 0; i < notes.Length; i++)
                 {
                     if (i % 3 == 0)
                         rows.Add(new List<InlineKeyboardButton>());
@@ -137,16 +163,17 @@ namespace TelegramBot
                     var row = rows.LastOrDefault();
                     if (row != null)
                     {
-                        var btn = InlineKeyboardButton.WithCallbackData(notes.ElementAt(i).title, notes.ElementAt(i).content);
+                        var btn = InlineKeyboardButton.WithCallbackData(notes[i].title, notes[i].content);
                         row.Add(btn);
                     }
                 }
 
                 var inlineKeyboard = new InlineKeyboardMarkup(rows);
+                var text = notes.Length > 0 ? "Choose your note" : "You don't have any notes yet";
 
                 await bot.SendTextMessageAsync(
                     chatId: message.Chat.Id,
-                    text: "Choose",
+                    text: text,
                     replyMarkup: inlineKeyboard
                 );
             }
@@ -201,9 +228,9 @@ namespace TelegramBot
             static async Task Usage(Message message)
             {
                 const string usage = "Usage:\n" +
-                                        "/rub   - get USD/RUB ratio\n" +
-                                        "/btc - get BTC/USD\n" +
-                                        "/notes - get user notes";
+                                        "/rub   - Get USD/RUB ratio\n" +
+                                        "/btc - Get BTC/USD\n" +
+                                        "/notes - Get user notes";
 
                 await bot.SendTextMessageAsync(
                     chatId: message.Chat.Id,

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -27,7 +28,7 @@ namespace DAL.Repositories
             context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<TEntity>> Get()
+        public async Task<IEnumerable<TEntity>> GetAll()
         {
             return await context.Set<TEntity>().ToListAsync();
         }
@@ -36,11 +37,16 @@ namespace DAL.Repositories
         {
             return await context.Set<TEntity>().FirstOrDefaultAsync(match);
         }
+        public async Task<IEnumerable<TEntity>> GetWhere(Expression<Func<TEntity, bool>> match)
+        {
+            return await context.Set<TEntity>().Where(match).ToListAsync();
+        }
 
         public void Update(TEntity item)
         {
             context.Set<TEntity>().Update(item);
             context.SaveChangesAsync();
         }
+
     }
 }

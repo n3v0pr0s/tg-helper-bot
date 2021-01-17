@@ -1,36 +1,22 @@
 ﻿using DAL;
 using DAL.Entities;
-using Microsoft.EntityFrameworkCore;
+using DAL.Repositories.Interfaces;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Services
 {
     public class NoteService
     {
-        ApplicationContext db;
-        public NoteService(ApplicationContext context)
+        private readonly INoteRepository noteRepository;
+        public NoteService(UnitOfWork unitOfWork)
         {
-            db = context;
+            this.noteRepository = unitOfWork.Notes;
         }
 
-        public async Task<IEnumerable<Note>> GetNotesByUserId(int user_id)
+        public async Task<IEnumerable<Note>> GetNotesByUserId(long user_id)
         {
-            return await db.notes
-                .Where(x => x.user_id == user_id)
-                .ToListAsync();
-        }
-
-        public async Task<string> GetNoteContent(int id)
-        {
-            var note = await db.notes
-                .FirstOrDefaultAsync(x => x.id == id);
-
-            if (note == null)
-                return "Не найдено в базе";
-
-            return note.content;
+            return await noteRepository.GetWhere(x => x.user_id == user_id);
         }
     }
 }
