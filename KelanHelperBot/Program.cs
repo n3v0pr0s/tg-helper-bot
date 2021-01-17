@@ -68,7 +68,7 @@ namespace TelegramBot
 
                         await SendInlineKeyboardByNotes(message, notes);
                     }
-                    break;
+                    break;          
 
                 default:
                     await Usage(message);

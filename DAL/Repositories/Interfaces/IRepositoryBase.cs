@@ -11,7 +11,6 @@ namespace DAL.Repositories.Interfaces
         Task<TEntity> Get(Expression<Func<TEntity, bool>> match);
         void Create(TEntity item);
         void Update(TEntity item);
-        void Delete(TEntity item);
-        void Save();
+        void Delete(TEntity item);        
     }
 }

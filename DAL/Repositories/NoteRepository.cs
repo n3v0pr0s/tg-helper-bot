@@ -17,7 +17,9 @@ namespace DAL.Repositories
 
         public async Task<IEnumerable<Note>> GetNotesByUserId(int id)
         {
-            return await context.Set<Note>().Where(x => x.user_id == id).ToListAsync();
+            return await context.Set<Note>()
+                .Where(x => x.user_id == id)
+                .ToListAsync();
         }
     }
 }
