@@ -6,8 +6,8 @@ namespace DAL
     public class ApplicationContext : DbContext
     {
         public DbSet<Case> cases { get; set; }
-        public DbSet<User> users { get; set; }
-        public DbSet<Note> notes { get; set; }
+        public DbSet<User> tg_users { get; set; }
+        public DbSet<Note> tg_notes { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

@@ -96,6 +96,10 @@ namespace TelegramBot
                     await bot.SendTextMessageAsync(chatId: user_id, text: @case);
                     break;
 
+                case "/calc":
+                    await SendInlineKeyboardURL(message, "https://n3v0pr0s.github.io");
+                    break;
+
                 default:
                     await Usage(message);
                     break;
@@ -174,6 +178,24 @@ namespace TelegramBot
                 await bot.SendTextMessageAsync(
                     chatId: message.Chat.Id,
                     text: text,
+                    replyMarkup: inlineKeyboard
+                );
+            }
+
+            static async Task SendInlineKeyboardURL(Message message,string url)
+            {
+                var inlineKeyboard = new InlineKeyboardMarkup(new[]
+                 {                    
+                    new []
+                    {
+                        InlineKeyboardButton.WithCallbackData("Перейти", url),
+                        
+                    }                   
+                });
+
+                await bot.SendTextMessageAsync(
+                    chatId: message.Chat.Id,
+                    text: "Жми",
                     replyMarkup: inlineKeyboard
                 );
             }
