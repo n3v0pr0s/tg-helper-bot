@@ -6,11 +6,17 @@ namespace DAL
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly ApplicationContext context = new ApplicationContext();
+        private readonly ApplicationContext context;
         private INoteRepository noteRepository;
-       
-        public INoteRepository Notes => noteRepository ?? new NoteRepository(context);
-       
+
+        public INoteRepository Notes { get; }
+
+        public UnitOfWork()
+        {
+            this.context = new ApplicationContext();
+            this.Notes = noteRepository ?? new NoteRepository(context);
+        }
+
         public void Save()
         {
             context.SaveChangesAsync();
