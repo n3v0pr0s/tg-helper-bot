@@ -4,19 +4,19 @@ using Microsoft.EntityFrameworkCore;
 namespace DAL
 {
     public class ApplicationContext : DbContext
-    {
-        public DbSet<Case> cases { get; set; }
+    {       
         public DbSet<User> tg_users { get; set; }
         public DbSet<Note> tg_notes { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            var host = "ec2-50-19-247-157.compute-1.amazonaws.com";
-            var port = "5432";
-            var db = "d9m29ifk15mc3q;Username=hulsprrrynffyb";
-            var pass = "2cfcc8362797203bb6527543223e413ea423f4bf6c8306ce6fc7ebfd912988f4";
+        {           
+            var host = "ec2-54-72-155-238.eu-west-1.compute.amazonaws.com";
+            var port = "5432";          
+            var db = "d27n3usq45obc6";           
+            var pass = "d0890400403bcdfd77690802122dbe8959d14a8edf8c33a05e001144cc8ab7dd";
+            var user = "gpbwkvkcvqkdua";
 
-            optionsBuilder.UseNpgsql($"Host={host};Port={port};Database={db};Password={pass};sslmode=Require;Trust Server Certificate=true;");
+            optionsBuilder.UseNpgsql($"User ID={user};Host={host};Port={port};Database={db};Password={pass};sslmode=Require;Trust Server Certificate=true;");
         }
     }
 }

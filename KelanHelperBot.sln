@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramBot", "KelanHelperBot\TelegramBot.csproj", "{F6B023AC-1A44-4645-B68D-C81CE425BA0D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegramBot", "TelegramBot\TelegramBot.csproj", "{F6B023AC-1A44-4645-B68D-C81CE425BA0D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "Finance\Services.csproj", "{60A71FC0-3DCB-4BDE-99A0-5014B61AB0A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "Services\Services.csproj", "{60A71FC0-3DCB-4BDE-99A0-5014B61AB0A9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAL", "DAL\DAL.csproj", "{5827CDD8-2643-4E40-8340-D0309A6DD108}"
 EndProject

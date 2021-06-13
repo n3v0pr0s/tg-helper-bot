@@ -8,9 +8,9 @@ namespace DAL
     {
         private readonly ApplicationContext context = new ApplicationContext();
         private INoteRepository noteRepository;
-        private ICaseRepository caseRepository;
+       
         public INoteRepository Notes => noteRepository ?? new NoteRepository(context);
-        public ICaseRepository Cases => caseRepository ?? new CaseRepository(context);
+       
         public void Save()
         {
             context.SaveChangesAsync();

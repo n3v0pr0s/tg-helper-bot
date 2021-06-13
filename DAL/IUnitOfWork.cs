@@ -5,8 +5,7 @@ namespace DAL
 {
     public interface IUnitOfWork : IDisposable
     {
-        INoteRepository Notes { get; }
-        ICaseRepository Cases { get; }
+        INoteRepository Notes { get; }       
         void Save();
     }
 }

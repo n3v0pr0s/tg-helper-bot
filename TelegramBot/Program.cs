@@ -78,82 +78,14 @@ namespace TelegramBot
                     await SendInlineKeyboardByNotes(message, notes.ToArray());
                     break;
 
-                case "/cases":
-                    var caseService = new CaseService(unitOfWork);
-                    var cases = await caseService.GetAllCasesAsJSON();
-                    await bot.SendTextMessageAsync(chatId: user_id, text: cases);
-                    break;
-
-                case "/case":
-                    if (param == null)
-                    {
-                        await bot.SendTextMessageAsync(chatId: user_id, text: "Отсутствует параметр");
-                        break;
-                    }
-
-                    var caseService2 = new CaseService(unitOfWork);
-                    var @case = await caseService2.GetCaseAsJSON((int)param.Value);
-                    await bot.SendTextMessageAsync(chatId: user_id, text: @case);
-                    break;
-
-                case "/calc":
-                    await SendInlineKeyboardURL(message, "https://n3v0pr0s.github.io");
+                case "/calc":                   
+                    await bot.SendTextMessageAsync(chatId: user_id, text: "https://n3v0pr0s.github.io");
                     break;
 
                 default:
                     await Usage(message);
                     break;
 
-                    // Send inline keyboard
-                    //case "/inline":
-                    //    await SendInlineKeyboard(message);
-                    //    break;
-
-                    // send custom keyboard
-                    //case "/keyboard":
-                    //    await SendReplyKeyboard(message);
-                    //    break;
-
-
-                    // send a photo
-                    //case "/photo":
-                    //    await SendDocument(message);
-                    //    break;
-
-                    // request location or contact
-                    //case "/request":
-                    //    await RequestContactAndLocation(message);
-                    //    break;
-
-            }
-
-            static async Task SendInlineKeyboard(Message message)
-            {
-                await bot.SendChatActionAsync(message.Chat.Id, ChatAction.Typing);
-
-                // Simulate longer running task
-                await Task.Delay(1500);
-
-                var inlineKeyboard = new InlineKeyboardMarkup(new[]
-                {
-                    // first row
-                    new []
-                    {
-                        InlineKeyboardButton.WithCallbackData("1.1", "11"),
-                        InlineKeyboardButton.WithCallbackData("1.2", "12"),
-                    },
-                    // second row
-                    new []
-                    {
-                        InlineKeyboardButton.WithCallbackData("2.1", "21"),
-                        InlineKeyboardButton.WithCallbackData("2.2", "22"),
-                    }
-                });
-                await bot.SendTextMessageAsync(
-                    chatId: message.Chat.Id,
-                    text: "Choose",
-                    replyMarkup: inlineKeyboard
-                );
             }
 
             static async Task SendInlineKeyboardByNotes(Message message, Note[] notes)
@@ -179,43 +111,6 @@ namespace TelegramBot
                     chatId: message.Chat.Id,
                     text: text,
                     replyMarkup: inlineKeyboard
-                );
-            }
-
-            static async Task SendInlineKeyboardURL(Message message,string url)
-            {
-                var inlineKeyboard = new InlineKeyboardMarkup(new[]
-                 {                    
-                    new []
-                    {
-                        InlineKeyboardButton.WithCallbackData("Перейти", url),
-                        
-                    }                   
-                });
-
-                await bot.SendTextMessageAsync(
-                    chatId: message.Chat.Id,
-                    text: "Жми",
-                    replyMarkup: inlineKeyboard
-                );
-            }
-
-            static async Task SendReplyKeyboard(Message message)
-            {
-                var replyKeyboardMarkup = new ReplyKeyboardMarkup(
-                    new KeyboardButton[][]
-                    {
-                        new KeyboardButton[] { "1.1", "1.2" },
-                        new KeyboardButton[] { "2.1", "2.2" },
-                    },
-                    resizeKeyboard: true
-                );
-
-                await bot.SendTextMessageAsync(
-                    chatId: message.Chat.Id,
-                    text: "Choose",
-                    replyMarkup: replyKeyboardMarkup
-
                 );
             }
 
