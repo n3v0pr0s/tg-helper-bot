@@ -1,1 +1,1 @@
-worker: cd $HOME/heroku_output && ./KelanHelperBot.sln
+worker: cd $HOME/heroku_output && ./TelegramBot
